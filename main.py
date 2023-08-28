@@ -4,6 +4,7 @@ import requests
 import pandas as pd
 import numpy as np
 from urllib.parse import urlparse, parse_qs
+valid_data = []
 
 def get_title(soup):
     try:
@@ -121,13 +122,22 @@ if __name__ == '__main__':
                         amazon_df = pd.DataFrame.from_dict(d)
                         amazon_df['Product Name'].replace('', np.nan, inplace=True)
                         amazon_df = amazon_df.dropna(subset=['Product Name'])
+                        valid_data.append(amazon_df)
                         #print(type(amazon_df))
                         #amazon_df = np.arange(1,len(final)+1)
                         #amazon_df.to_csv("new.csv", header=True, index=False)
                     except:
                         continue
-            st.success('Data fetched successfully')
-            st.download_button("Download",amazon_df.to_csv(),file_name="saaman.csv",mime="text/csv")
+            if valid_data:
+                amazon_df = pd.concat(valid_data)
+
+                # Display success message
+                st.success('Data fetched successfully')
+            
+                # Display download button
+                st.download_button("Download CSV", amazon_df.to_csv(index=False), file_name="saaman.csv", mime="text/csv")
+            else:
+                st.error('No valid data found.')
 
 
         else:
