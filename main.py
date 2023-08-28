@@ -123,6 +123,7 @@ if __name__ == '__main__':
                         amazon_df['Product Name'].replace('', np.nan, inplace=True)
                         amazon_df = amazon_df.dropna(subset=['Product Name'])
                         valid_data.append(amazon_df)
+                        #st.dataframe(amazon_df)
                         #print(type(amazon_df))
                         #amazon_df = np.arange(1,len(final)+1)
                         #amazon_df.to_csv("new.csv", header=True, index=False)
