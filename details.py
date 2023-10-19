@@ -65,4 +65,4 @@ for url in df['URL']:
 amazon_df = pd.DataFrame(data_list)
 
 # Save the DataFrame to a CSV file
-amazon_df.to_csv("amazon_data.csv", header=True, index=False)
+amazon_df.to_csv("Product_data.csv", header=True, index=False)
