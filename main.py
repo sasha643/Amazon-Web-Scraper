@@ -1,9 +1,7 @@
-import streamlit as st
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
 import numpy as np
-from urllib.parse import urlparse, parse_qs
 
 def get_title(soup):
     try:
@@ -71,65 +69,48 @@ def get_availability(soup):
 
 if __name__ == '__main__':
     d = {"URL": [], "Product Name":[], "price(Rs)":[], "rating":[], "reviews":[]}
-    number = st.number_input('Enter how many pages you want to extract: ')
-    URL = st.text_input('Enter the url of the page: ')
-    #count = 0
-    if st.button('Enter'):
-        if number and URL is not None:
-            parsed_url = urlparse(URL)
-            query_params = parse_qs(parsed_url.query)
-            if 'qid' in query_params:
-                qid = query_params['qid'][0]
-            for i in range(int(number)):
-                #print(i)
-                url = 'https://www.amazon.in/s?k=bags&page={}&crid=2M096C61O4MLT&qid={}&sprefix=ba%2Caps%2C283&ref=sr_pg_{}'.format(i,i,qid)
-                #print(url)
-                headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36', 'Accept-Language': 'en-US, en;q=0.5'}
-                webpage = requests.get(url, headers=headers)
+    for i in range(1,21):
+        #print(i)
+        url = 'https://www.amazon.in/s?k=bags&page={}&crid=2M096C61O4MLT&qid=1692795295&sprefix=ba%2Caps%2C283&ref=sr_pg_{}'.format(i,i)
+        #print(url)
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36', 'Accept-Language': 'en-US, en;q=0.5'}
+        webpage = requests.get(url, headers=headers)
 
-                # Soup Object containing all data
-                soup = BeautifulSoup(webpage.content, "html.parser")
+        # Soup Object containing all data
+        soup = BeautifulSoup(webpage.content, "html.parser")
 
-                # Fetch links as List of Tag Objects
-                links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
-                
-                #print(links[5].get('href'))
+        # Fetch links as List of Tag Objects
+        links = soup.find_all("a", attrs={'class':'a-link-normal s-no-outline'})
+        
+        #print(links[5].get('href'))
 
-                # Store the links
-                links_list = []
+        # Store the links
+        links_list = []
 
-                # Loop for extracting links from Tag Objects
-                for link in links:
-                        links_list.append(link.get('href'))
-                
-                # Loop for extracting product details from each link 
-                for link in links_list:
-                    try:
-                        #print(link)
-                        new_webpage = requests.get("https://www.amazon.in" + link, headers=headers)
+        # Loop for extracting links from Tag Objects
+        for link in links:
+                links_list.append(link.get('href'))
+        
+        # Loop for extracting product details from each link 
+        for link in links_list:
+            try:
+                #print(link)
+                new_webpage = requests.get("https://www.amazon.in" + link, headers=headers)
 
-                        new_soup = BeautifulSoup(new_webpage.content, "html.parser")
+                new_soup = BeautifulSoup(new_webpage.content, "html.parser")
 
-                        # Function calls to display all necessary product information
-                        d['URL'].append("https://www.amazon.in" + link)
-                        d['Product Name'].append(get_title(new_soup))
-                        d['price(Rs)'].append(get_price(new_soup))
-                        d['rating'].append(get_rating(new_soup))
-                        d['reviews'].append(get_review_count(new_soup))
+                # Function calls to display all necessary product information
+                d['URL'].append("https://www.amazon.in" + link)
+                d['Product Name'].append(get_title(new_soup))
+                d['price(Rs)'].append(get_price(new_soup))
+                d['rating'].append(get_rating(new_soup))
+                d['reviews'].append(get_review_count(new_soup))
 
-                    
-                        amazon_df = pd.DataFrame.from_dict(d)
-                        amazon_df['Product Name'].replace('', np.nan, inplace=True)
-                        amazon_df = amazon_df.dropna(subset=['Product Name'])
-                        #print(type(amazon_df))
-                        #amazon_df = np.arange(1,len(final)+1)
-                        #amazon_df.to_csv("new.csv", header=True, index=False)
-                    except:
-                        continue
-            st.success('Data fetched successfully')
-            #st.download_button("Download",amazon_df.to_csv(),file_name="saaman.csv",mime="text/csv")
-            st.dataframe(amazon_df)
+            
+                amazon_df = pd.DataFrame.from_dict(d)
+                amazon_df['Product Name'].replace('', np.nan, inplace=True)
+                amazon_df = amazon_df.dropna(subset=['Product Name'])
+                amazon_df.to_csv("data.csv", header=True, index=False)
 
-        else:
-            st.warning('Enter all detals!')
-    #https://www.amazon.in/s?k=bags&crid=2M096C61O4MLT&qid=1693161254&sprefix=ba%2Caps%2C283&ref=sr_pg_1
+            except:
+                continue
