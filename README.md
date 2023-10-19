@@ -17,7 +17,7 @@ Before running the script, make sure you have the following libraries installed:
 You can install these libraries using `pip`:
 
 ```bash
-pip install beautifulsoup4 requests pandas numpy
+pip install beautifulsoup4 requests pandas numpy.
 
 #Usage
 
@@ -52,3 +52,5 @@ URL: The URL of the product.
 Manufacturer: The manufacturer of the product.
 ASIN: The Amazon Standard Identification Number.
 Product details: The product details section from the Amazon page.
+
+data.csv and Product_details.csv are uploaded for reference.
