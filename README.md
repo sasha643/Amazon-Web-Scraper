@@ -13,7 +13,7 @@ Before running the script, make sure you have the following libraries installed:
 - `pandas`: For data manipulation and storage.
 - `numpy`: For data handling.
 - `re`: For regular expressions.
-- 
+  
 You can install these libraries using `pip`:
 
 ```bash
